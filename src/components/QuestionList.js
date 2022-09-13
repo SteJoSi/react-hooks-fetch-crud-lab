@@ -4,10 +4,12 @@ function QuestionList() {
   const [questionData, showQuestionData] = useState([])
 
   useEffect(() => {
-    fetch("http://localhost:4000/questions ")
+    fetch("http://localhost:4000/questions")
       .then((r) => r.json())
       .then((data) => showQuestionData(data))
   }, [])
+
+  
 
   return (
     <section>
