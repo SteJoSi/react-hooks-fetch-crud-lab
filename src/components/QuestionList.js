@@ -1,28 +1,62 @@
-import React, {useState, useEffect} from "react";
-import QuestionForm from "./QuestionForm";
+import React, { useState, useEffect } from "react";
+import QuestionItem from "./QuestionItem";
 
 function QuestionList() {
-  const [data, showQuestionData] = useState([])
+  const [questions, showQuestionData] = useState([])
 
   useEffect(() => {
     fetch("http://localhost:4000/questions")
       .then((r) => r.json())
-      .then((data) => showQuestionData(data))
+      .then((data) => {
+        // questions = data
+        showQuestionData(data)
+      });
   }, [])
 
-  //new 
-  function handleAddQuestion(newQuestion) {
-    // console.log("New Question:", newQuestion)
-    showQuestionData([...data, newQuestion])
+
+  //callback function for a new question
+  function handleUpdatedQuestion(updatedQuestion) {
+    // console.log(updatedQuestion);
+    const updatedQuestions = questions.map((question) => {
+      if (question.id === updatedQuestion.id) {
+        return updatedQuestion;
+      } else {
+        return question;
+      }
+    });
+    showQuestionData(updatedQuestions)
+  }
+
+  //callback function for deleted item
+  function handleDeleteQuestion(deletedQuestion) {
+    // console.log("Deleted", deletedQuestion)
+    const updatedQuestions = questions.filter((question) => question.id !== deletedQuestion.id);
+    showQuestionData(updatedQuestions)
   }
 
   return (
     <section>
       <h1>Quiz Questions</h1>
-      <ul>{/* display QuestionItem components here after fetching */}</ul>
-      <QuestionForm addQuestion={handleAddQuestion} />
+      <ul>
+        {/* display QuestionItem components here after fetching */}
+        {questions ? questions.map((question) => {
+          return (
+            <QuestionItem
+              key={question.id}
+              question={question}
+              onUpdateQuestion={handleUpdatedQuestion}
+              onDeleteQuestion={handleDeleteQuestion}
+            />
+          )
+        }) : null}
+      </ul>
     </section>
   );
 }
 
+
 export default QuestionList;
+
+   // <QuestionForm 
+      //   key={question.key}
+      //   addQuestion={handleAddQuestion} />
